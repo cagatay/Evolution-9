@@ -11,7 +11,9 @@ from evolution9.midi.midiActions import createMIDI
 from evolution9.evolution.storage import db
 
 if __name__ == '__main__':
-    db.initDatabase()
+    storage =  db.Database()
+    storage.initDatabase()
+    storage.printAll()
     composition = list()
 
     for i in range(10):
