@@ -5,7 +5,7 @@ Created on Oct 11, 2010
 '''
 
 from evolution9.midi.MidiFile3 import MIDIFile
-from evolution9.constants import OUTPUT_DIR
+from constants import OUTPUT_DIR
 
 def createMIDI(filename, notes):
     midi = MIDIFile(1)

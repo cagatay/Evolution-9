@@ -1,0 +1,14 @@
+hardday:d=4,o=5,b=180:8c#,8d,8c#,e,p,e,8p,e,p,8e,8e,8d,8e,g,p,8e,8d,8e,c#,p,8c#,8d,8c#,e,p,e,8p,e,p,8e,8e,8d,8e,g,p,8e,8d,8e,c#
+Love:d=8,o=6,b=180:d,d,d,d,4d,2p,d,d,d,d,4d,2p,d,d,d#,4e,p,4b5,2p,a5,b5,a5,g5,4g5
+Chance:d=4,o=6,b=180:e,d,c,d,g5,2p,g5,f,e,d,c,p,e,d,c,d,g5,2p,g5,f,e,d,c
+Help:d=8,o=5,b=125:b,b,b,b,b,b,b,4b,4b,b,b,d6,b,a,p,4g,4p,4a#,4b,4a,4b,4b,a#,b,b,b,c6,c6,c6,c6,b,p
+jude:d=8,o=5,b=180:g,e,p,e,e,g,a,d,p,p,d,e,f,c,c,c,b,g,a,g,f,4e,p,g,a,a,a,d6,c6,b,b,c6,a,4g,c,d,e,a,a,4g
+Madonna:d=8,o=6,b=100:e,4e,16d5,d,16p,16c,4p,e,e,d,16a5,4c,4p,e,e,g,e,a,g,e,4c,p,c,d5,c,2p,e,4e,16d5,d,16p,16c,4p,e,e,d,16a5,4c
+letitbe:d=4,o=5,b=112:16g.,8g,g,8g,a,8e,8g,g.,8c6,d.6,e6,8e6,e6,8d6,8d6,8c6,2c6,e6,8e6,f6,8e6,8e6,d.6,8e6,8d6,2c6
+do:d=4,o=6,b=180:d,d,8f,g,p,8f,8d,8d,8f,g,p,8f,8d,8d,8f,g,8p,d,e,d,c,e,p,g5,g5,a#5,g5
+you:d=8,o=6,b=180:d,e,g,4g,f#,e,p,p,d,e,g,g,f#,e,p,p,d,e,g,4g,p,4f,4p,4e
+Fields:d=8,o=5,b=180:b,b,c6,b,g,d,e,a,g,f,f,g,a,d,p,2p,4f,4g,4g#,d,d6,c6,b,a,g#,a,4b,p,b,g,e,p,b,g,d,a,4g
+Hand:d=8,o=6,b=180:g,a,g,p,p,f,4e,p,e,g,f,e,d,p,4e,e,e,e,e,b,p
+Four:d=8,o=6,b=180:e5,d#5,e5,g5,e5,g5,a5,g5,4c,c,e,c,a5,4d,2p,b5,c,c#,d,b5,c,c#,d,b5,a#5,a5,4a5,4p,4b5,4c,4c#,4d,4e,4d#,d,c,p
+Submarine:d=8,o=5,b=180:4d6,4d6,4d6,d6,e6,a,a,a,a,4a,a,a,a,a,4a,p,g,g,g,g,4g
+yday:d=4,o=5,b=125:g,8f,f,p,8a,8b,8c#6,8d6,e6,8p,8f6,e6,8d6,d6,p,8d6,8d6,8c6,8a#,8a,8g,8a#,8a,8a,a,8p,g,f,8a,8g,g,8p,8d,f,8p,8a,a

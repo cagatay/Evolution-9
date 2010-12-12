@@ -4,7 +4,7 @@ Created on Oct 11, 2010
 @author: melih.karci
 '''
 
-from evolution9.constants import SQLITE_FILE
+from constants import SQLITE_FILE
 import sqlite3
 
 class Database:
