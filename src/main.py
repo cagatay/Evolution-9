@@ -13,27 +13,46 @@ from pybrain.tools.shortcuts import buildNetwork
 from mingus.midi.MidiFileIn import MIDI_to_Composition
 from mingus.midi.MidiFileOut import write_Composition
 from mingus.containers import *
+from pybrain.supervised.trainers import BackpropTrainer
+from pybrain.datasets import SupervisedDataSet
+import mingus.core.notes as notes
 import RTTL
 import os
 import constants
+from NN import NN
 
 
 
 if __name__ == '__main__':
-    list = RTTL.parse(constants.INPUT_DIR + "beatles.txt")
+    songList = RTTL.parse(constants.INPUT_DIR + "beatles.txt")
     
-    for song in list:
-        track = Track()
-        
-        for note in song.notes:
-            if not note[1]:
-                track.add_notes(None, note[0])
-            else:
-                track.add_notes(Note(note[1], note[2]), note[0])
-        composition = Composition()
-        composition.add_track(track)
-        composition.set_title(song.name)
-        write_Composition(constants.OUTPUT_DIR + song.name + ".mid", composition, song.bpm)
+
+    currentNN = NN("yeni",3,3)
+    
+    currentNN.train(songList[0])
+    
+    currentNN.saveNetworkToFile()
+    
+    
+    
+    
+    
+    
+    
+    
+#    for song in list:
+#        track = Track()
+#        
+#        for note in song.notes:
+#            if not note[1]:
+#                track.add_notes(None, note[0])
+#            else:
+#                currentNote = int(Note(note[1], note[2]))
+#                track.add_notes(Note(note[1], note[2]), note[0])
+#        composition = Composition()
+#        composition.add_track(track)
+#        composition.set_title(song.name)
+#        write_Composition(constants.OUTPUT_DIR + song.name + ".mid", composition, song.bpm)
 #    defDuration = 4
 #    defOctave = 5
 #    beat = 180
