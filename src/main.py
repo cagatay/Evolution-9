@@ -27,12 +27,32 @@ if __name__ == '__main__':
     songList = RTTL.parse(constants.INPUT_DIR + "beatles.txt")
     
 
-    currentNN = NN("yeni",3,3)
+    currentNN = NN("yeni",3,1)
     
-    currentNN.train(songList[0])
+    for song in songList:
+        currentNN.addSong( song )
+    
+    currentNN.train()
     
     currentNN.saveNetworkToFile()
     
+    #currentNN.readNetworkFromFile()
+    
+    songList = RTTL.parse(constants.INPUT_DIR + "metallica.txt")
+    
+    sonuc = currentNN.fitness( songList[0] )
+    
+    print sonuc
+    
+    sonuc = currentNN.fitness( songList[1] )
+    
+    print sonuc
+    
+    songList = RTTL.parse(constants.INPUT_DIR + "beatles.txt")
+    
+    sonuc = currentNN.fitness( songList[6] )
+    
+    print sonuc
     
     
     
