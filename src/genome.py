@@ -13,6 +13,23 @@ dot_range = ['.', '']
 
 r = lambda x: random.randint(0, x)
 
+def r2(x):
+    while(True):
+        point_1 = r(x)
+        point_2 = r(x)
+
+        if point_1 != point_2:
+            break
+
+    if point_1 > point_2:
+        point_1, point_2 = point_2, point_1
+
+    return point_1, point_2
+
+##############################################################################
+# generators
+##############################################################################
+
 def random_gene():
     pitch = random.choice(pitch_range)
     duration = random.choice(duration_range)
@@ -42,15 +59,8 @@ def one_point_crossover(father, mother):
     return child_1, child_2
 
 def two_point_crossover(father, mother):
-    while(True):
-        point_1 = random.randint(0, GENOME_LENGTH - 1)
-        point_2 = random.randint(0, GENOME_LENGTH - 1)
-        if point_1 != point_2:
-            break
+    point_1, point_2 = r2(GENOME_LENGTH - 1)
     
-    if point_1 > point_2:
-        point_1, point_2 = point_2, point_1
-
     child_1 = father[:point_1] + mother[point_1:point_2] + father[point_2:]
     child_2 = mother[:point_1] + father[point_1:point_2] + mother[point_2:]
 
@@ -67,21 +77,16 @@ def uniform_crossover(father, mother):
 ##############################################################################
 
 def swap_mutation(genome):
-    point_1 = random.randint(0, GENOME_LENGTH - 1)
-    point_2 = random.randint(0, GENOME_LENGTH - 1)
+    point_1, point_2 = r2(GENOME_LENGTH - 1)
 
     genome[point_1], genome[point_2] = genome[point_2], genome[point_1]
 
 def replace_mutation(genome):
-    point = random.randint(0, GENOME_LENGTH -1)
+    point = r(GENOME_LENGTH - 1)
     genome[point] = random_gene()
 
 def scramble_mutation(genome):
-    point_1 = random.randint(0, GENOME_LENGTH -1)
-    point_2 = random.randint(0, GENOME_LENGTH -1)
-
-    if point_1 > point_2:
-        point_2, point_1 = point_1, point_2
+    point_1, point_2 = r2(GENOME_LENGTH - 1)
 
     temp = genome[point_1:point_2]
     random.shuffle(temp)
@@ -89,13 +94,8 @@ def scramble_mutation(genome):
     genome[point_1:point_2] = temp
 
 def inversion_mutation(genome):
-    point_1 = random.randint(0, GENOME_LENGTH -1)
-    point_2 = random.randint(0, GENOME_LENGTH -1)
-
-    if point_1 > point_2:
-        point_2, point_1 = point_1, point_2
+    point_1, point_2 = r2(GENOME_LENGTH - 1)
 
     temp = genome[point_1:point_2]
     temp.reverse()
     genome[point_1:point_2] = temp
-
