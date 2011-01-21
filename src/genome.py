@@ -27,7 +27,7 @@ def r2(x):
     return point_1, point_2
 
 ##############################################################################
-# generators
+# Generators
 ##############################################################################
 
 def random_gene():
@@ -99,3 +99,9 @@ def inversion_mutation(genome):
     temp = genome[point_1:point_2]
     temp.reverse()
     genome[point_1:point_2] = temp
+
+crossover_operators = [one_point_crossover, two_point_crossover, uniform_crossover]
+mutation_operators = [swap_mutation, replace_mutation, scramble_mutation, inversion_mutation]
+
+random_crossover = lambda x, y: random.choice(crossover_operators)(x, y)
+random_mutator = lambda x: random.choice(mutation_operators)(x)
