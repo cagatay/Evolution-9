@@ -1,5 +1,5 @@
 from pybrain.tools.shortcuts import buildNetwork
-from mingus.containers import *
+from mingus.containers.Note import Note
 from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.datasets import SupervisedDataSet
 import constants
