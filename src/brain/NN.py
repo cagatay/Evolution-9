@@ -1,10 +1,10 @@
-from pybrain.tools.shortcuts import buildNetwork
 from mingus.containers.Note import Note
 from pybrain.supervised.trainers import BackpropTrainer
-from pybrain.datasets import SupervisedDataSet
 import constants
 import pickle
 import math
+from pybrain.auxiliary import GradientDescent
+from pybrain.structure import RecurrentNetwork, LinearLayer, SigmoidLayer, FullConnection
 import random
 from util import rttl
 
@@ -12,8 +12,26 @@ class neural_network(object):
     def __init__(self, name, dataset, trained, store):
         self.name = name
         self.store = store
-        self.trained = True
+        self.trained = trained
         self.dataset = dataset
+
+        self.net = RecurrentNetwork()
+        self.net.addInputModule(LinearLayer(2, name='in'))
+        self.net.addModule(SigmoidLayer(3, name='hidden'))
+        self.net.addOutputModule(LinearLayer(1, name='out'))
+        self.net.addConnection(FullConnection(self.net['in'], self.net['out'], name='c1'))
+        self.net.addConnection(FullConnection(self.net['hidden'], self.net['out'], name='c2'))
+        self.net.addRecurrentConnection(FullConnection(self.net['hidden'], self.net['hidden'], name='c3'))
+        self.net.sortModules()
+        
+        self.descent = GradientDescent()
+        self.descent.alpha = 0.01
+        self.descent.momentum = 0.0
+        self.descent.alphadecay = 1.0
+        self.descent.init(self.net.params)
+
+        if not self.trained:
+            self.train()
 
         return
 
@@ -44,7 +62,26 @@ class neural_network(object):
         return random.random()
 
     def train(self):
+        target = 1
+
+        descent = GradientDescent()
+        descent.alpha 
+
+        for song in self.dataset:
+            for note in song:
+                output = self.net.activate(note)
+
+            self.net.backActivate(output - target)
+
+            for _ in range(len(song) - 1):
+                self.net.backActivate(0)
+
+            self.net._setParameters(self.descent(self.net.derivs))
+
+            print 'error: %d'%(output - target)
+
         self.save()
+
 
 '''
 class NN:
