@@ -30,3 +30,8 @@ class song(object):
         self.individual_id = individual_id
 
         self.name = self.evolution + '-' + str(self.generation) + '-' + str(self.individual_id)
+        return
+
+    @property
+    def selected(self):
+        return self.status == 'selected'

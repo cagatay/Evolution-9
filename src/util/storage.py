@@ -151,8 +151,8 @@ class db:
     def get_genomes(self, evolution, generation):
         c = self._cursor
         c.execute('''
-            SELECT * FROM genomes WHERE evolution=? AND generation=? ORDER BY individual_id ASC
-        ''', [evolution, generation])
+            SELECT * FROM genomes WHERE evolution=? AND generation=? AND status <> ? ORDER BY individual_id ASC
+        ''', [evolution, generation, 'eliminated'])
 
         result = c.fetchall()
         c.close()

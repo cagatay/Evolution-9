@@ -50,11 +50,19 @@ class evolution9_app(object):
             'graphs' : self.builder.get_object('generation_info_tab'),
             'play' : self.builder.get_object('play_button')
         }
+
+        self.console = gtk.TextBuffer()
+        self.builder.get_object('console').set_buffer(self.console)
         
         # hide dialogs instead of destroying them for reuse
         self.hide_dialog = gtk.Widget.hide_on_delete
 
         self.builder.connect_signals(self)
+
+    def log_console(self, text):
+        self.console.insert_at_cursor(text + '\n')
+        self.builder.get_object('console').scroll_to_mark(self.console.get_insert(), 0)
+
 
     def start_evolution(self):
         if self.evolution9.initialized:
@@ -62,13 +70,15 @@ class evolution9_app(object):
         self.update_state()
         self.update_genome_list()
 
+        self.log_console('%s is started'%self.evolution9.name)
+
         #self.builder.get_object('generation_info_tab').set_sensitive(True)
     def update_state(self):
         for k, v in self.controls.iteritems():
             v.set_sensitive(False)
         
         if self.evolution9:
-            if not self.evolution9.initialized or self.evolution9.state == 'reproduction':
+            if not self.evolution9.initialized or self.evolution9.state == 'reproduce':
                 self.controls['initialize'].set_sensitive(True)
             elif self.evolution9.state == 'evaluation':
                 self.controls['evaluate'].set_sensitive(True)
@@ -98,6 +108,7 @@ class evolution9_app(object):
         self.builder.get_object('parent1_label').set_text(individual.parent_1)
         self.builder.get_object('parent2_label').set_text(individual.parent_2)
         self.builder.get_object('grade_label').set_text(str(individual.grade))
+        self.builder.get_object('selected_label').set_text(str(individual.selected))
 
         self.controls['play'].set_sensitive(True)
 
@@ -152,6 +163,11 @@ class evolution9_app(object):
         self.open_evolution_dialog.present()
         return
 
+    def on_apply_selection_button_clicked(self, *args):
+        self.evolution9.apply_selection(self.log_console)
+        self.update_genome_list()
+        self.update_state()
+
     def on_new_neural_network_button_clicked(self, *args):
         self.new_neural_network_dialog.present()
 
@@ -165,6 +181,7 @@ class evolution9_app(object):
             self.error_message(str(err))
             traceback.print_exc(file=sys.stdout)
         else:
+            self.log_console('created neural network : %s' % nn_name)
             self.update_nn_list()
             self.new_neural_network_dialog.hide()
 
@@ -184,8 +201,14 @@ class evolution9_app(object):
             self.start_evolution()
             self.open_evolution_dialog.hide()
 
+    def on_evaluate_button_clicked(self, *args):
+        self.evolution9.evaluate(self.log_console)
+        self.update_genome_list()
+        self.update_state()
+        return
+
     def on_initialize_button_clicked(self, *args):
-        self.evolution9.initialize()
+        self.evolution9.initialize(self.log_console)
         self.controls['initialize'].set_label('Reproduce')
         self.update_state()
         self.update_genome_list()

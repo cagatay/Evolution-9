@@ -50,7 +50,7 @@ class evolution(object):
 
         return [x[0] for x in result] if result else None
 
-    def initialize(self):
+    def initialize(self, console = None):
         self.current_generation = []
 
         for i in xrange(self.population_size):
@@ -60,6 +60,9 @@ class evolution(object):
         self.state = 'evaluation'
         self.save_genomes()
         self.save()
+
+        if console:
+            console('%s is initialized'%self.name)
         return
 
     @property
@@ -78,3 +81,34 @@ class evolution(object):
 
         return
 
+    def evaluate(self, console = None):
+        self.results = []
+        for g in self.current_generation:
+            result = self.evaluator.evaluate(g.int_list)
+            g.grade = result
+            if console:
+                console('%s evaluation result: %f'%(g.name, result))
+
+        self.current_generation = sorted(self.current_generation, key=lambda x: x.grade, reverse=True)
+        for i in range(self.population_size):
+            if i < self.population_size/2:
+                self.current_generation[i].status = 'selected'
+            else:
+                self.current_generation[i].status = 'eliminated'
+        self.state = 'select'
+
+        if console:
+            console('Generation %d of %s : evaluation complete'%(self.generation_count, self.name))
+        return
+
+    def apply_selection(self, console = None):
+        self.save_genomes()
+
+        self.current_generation = self.current_generation[:self.population_size/2]
+        self.state = 'reproduce'
+
+        self.save()
+
+        console('%s : applied selection on generation %d'%(self.name, self.generation_count))
+        
+        return
