@@ -2,7 +2,6 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkListStore" id="genome_list"/>
   <object class="GtkWindow" id="window">
     <property name="width_request">600</property>
     <property name="height_request">400</property>
@@ -71,12 +70,13 @@
                         <property name="visible">True</property>
                         <property name="layout_style">end</property>
                         <child>
-                          <object class="GtkButton" id="button1">
+                          <object class="GtkButton" id="initialize_button">
                             <property name="label" translatable="yes">Initialize</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <signal name="clicked" handler="on_initialize_button_clicked"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -85,7 +85,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="button2">
+                          <object class="GtkButton" id="step_1_button">
                             <property name="label" translatable="yes">Step 1</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
@@ -99,7 +99,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="button3">
+                          <object class="GtkButton" id="step_50_button">
                             <property name="label" translatable="yes">Step 50</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
@@ -125,10 +125,11 @@
                         <property name="hscrollbar_policy">automatic</property>
                         <property name="vscrollbar_policy">automatic</property>
                         <child>
-                          <object class="GtkTreeView" id="treeview1">
+                          <object class="GtkTreeView" id="genome_view">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="model">genome_list</property>
+                            <property name="enable_search">False</property>
+                            <property name="ubuntu_almost_fixed_height_mode">True</property>
                           </object>
                         </child>
                       </object>
@@ -241,7 +242,7 @@
                             <property name="visible">True</property>
                             <property name="left_padding">12</property>
                             <child>
-                              <object class="GtkNotebook" id="notebook1">
+                              <object class="GtkNotebook" id="generation_info_tab">
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
@@ -374,7 +375,6 @@
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="evolution_list"/>
   <object class="GtkDialog" id="new_neural_network_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">New neural network</property>
@@ -792,6 +792,60 @@
     </child>
     <action-widgets>
       <action-widget response="0">new_evolution_ok_button</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkDialog" id="open_evolution_dialog">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Open evolution</property>
+    <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="type_hint">normal</property>
+    <signal name="delete_event" handler="hide_dialog"/>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox4">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkComboBox" id="evolution_combo">
+            <property name="visible">True</property>
+            <property name="active">0</property>
+            <property name="entry_text_column">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area4">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="open_evolution_ok_button">
+                <property name="label" translatable="yes">OK</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_open_evolution_ok_button_clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">open_evolution_ok_button</action-widget>
     </action-widgets>
   </object>
 </interface>

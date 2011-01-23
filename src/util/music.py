@@ -10,7 +10,7 @@ dot_range = ['.', '']
 
 class note(object):
     def __init__(self, note, octave, duration, dot):
-        self.note = note
+        self.note = str(note)
         self.octave = '' if octave is None else octave
         self.duration = duration
         self.dot = dot

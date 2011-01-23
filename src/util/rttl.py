@@ -40,7 +40,6 @@ def parse(rttl_string):
             n = n[0:len(n) - 1]
 
         track.append(note(n, duration, octave, dot))
-        
     return track
 
 def dataset_from_file(file_uri):

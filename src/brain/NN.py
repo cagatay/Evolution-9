@@ -18,7 +18,7 @@ class neural_network(object):
         return
 
     def save(self):
-        self.store.update_neural_network(self.name, self.trained)
+        self.store.save_neural_network(self.name, self.dataset, self.trained)
         return
 
     @classmethod
@@ -36,13 +36,15 @@ class neural_network(object):
     @classmethod
     def new(cls, name, store, ds_file_uri):
         dataset = rttl.dataset_from_file(ds_file_uri)
-        print dataset
 
         store.new_neural_network(name, dataset)
         return
 
     def evaluate(self, genome):
         return random.random()
+
+    def train(self):
+        self.save()
 
 '''
 class NN:

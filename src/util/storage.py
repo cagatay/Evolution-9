@@ -13,7 +13,7 @@ class db:
     
     def __init__(self):
         self._connection = sqlite3.connect(SQLITE_FILE)
-        c = self._connection.cursor()
+        c = self._cursor
         
         # Create neural networks table
         c.execute('''
@@ -24,7 +24,7 @@ class db:
             );
         ''')
 
-        # Create saved table
+        # Create evolutions table
         c.execute('''
             CREATE TABLE IF NOT EXISTS evolutions(
                 name TEXT PRIMARY KEY ON CONFLICT REPLACE,
@@ -39,11 +39,14 @@ class db:
         # create genomes table
         c.execute('''
             CREATE TABLE IF NOT EXISTS genomes(
-                id INTEGER PRIMARY KEY ON CONFLICT REPLACE,
+                name TEXT PRIMARY KEY ON CONFLICT REPLACE,
                 genome TEXT,
                 evolution TEXT,
-                parent_1 INTEGER,
-                parent_2 INTEGER,
+                generation INTEGER,
+                individual_id,
+                parent_1 TEXT,
+                parent_2 TEXT,
+                grade REAL,
                 status TEXT,
                 FOREIGN KEY(evolution) REFERENCES evolutions(name)
             );
@@ -76,10 +79,10 @@ class db:
 
     #Returns evolution for the given row id
     def get_evolution(self, name):
-        c = self._cursor()
+        c = self._cursor
         c.execute('''
             SELECT * FROM evolutions WHERE name=?
-        ''', (name))
+        ''', [name])
 
         result = c.fetchall()
         c.close()
@@ -87,7 +90,7 @@ class db:
         return result[0] if result else None
 
     def get_evolution_list(self):
-        c = self._cursor()
+        c = self._cursor
         c.execute('''
             SELECT name FROM evolutions
         ''')
@@ -109,12 +112,12 @@ class db:
         c.close()
         return 
 
-    def update_neural_network(self, row_id, trained):
+    def save_neural_network(self, dataset, trained):
         c = self._cursor
 
         c.execute('''
             UPDATE neural_networks SET trained=?  WHERE name=?;
-        ''', (int(trained), row_id))
+        ''', (int(trained), json.dumps(dataset)))
 
         self._commit()
         c.close()
@@ -145,14 +148,51 @@ class db:
 
         return [x[0] for x in result]
 
-    #Updates status of the given row id
-    def update(self, rowid, status):
-        c = self.cursor()
+    def get_genomes(self, evolution, generation):
+        c = self._cursor
         c.execute('''
-            UPDATE composers SET status=? WHERE ROWID=?
-        ''', (status, rowid))
+            SELECT * FROM genomes WHERE evolution=? AND generation=? ORDER BY individual_id ASC
+        ''', [evolution, generation])
 
-        self.commit()
+        result = c.fetchall()
+        c.close()
+
+        return result
+
+    def save_genome(self,
+                    name,
+                    genome,
+                    evolution,
+                    generation,
+                    individual_id,
+                    parent_1,
+                    parent_2,
+                    grade,
+                    status):
+
+        c = self._cursor
+        c.execute('''
+            INSERT INTO genomes(name,
+                                genome,
+                                evolution,
+                                generation,
+                                individual_id,
+                                parent_1,
+                                parent_2,
+                                grade,
+                                status)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
+        ''', (name,
+              genome,
+              evolution,
+              generation,
+              individual_id,
+              parent_1,
+              parent_2,
+              grade,
+              status))
+
+        self._commit()
 
         c.close()
         return
