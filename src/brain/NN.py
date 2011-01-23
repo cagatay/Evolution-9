@@ -5,8 +5,49 @@ from pybrain.datasets import SupervisedDataSet
 import constants
 import pickle
 import math
+import random
+from util import rttl
 
- 
+class neural_network(object):
+    def __init__(self, name, store, dataset, trained, row_id = None):
+        self.name = name
+        self.store = store
+        self.trained = True
+
+        if row_id is None:
+            self.row_id = self.save()
+        else:
+            self.row_id = row_id
+
+        return
+
+    def save(self):
+        self.store.update_neural_network(self.row_id, self.trained)
+        return
+
+    @classmethod
+    def get_saved(cls, row_id, store):
+        result = store.get_neural_network(row_id)
+        
+        return cls(result[0], store, result[1], row_id)
+
+    @classmethod
+    def get_list(cls, store):
+        result = store.get_neural_network_list()
+        
+        return [tuple(x) for x in result]
+
+    @classmethod
+    def new(cls, name, store, ds_file_uri):
+        dataset = rttl.dataset_from_file(ds_file_uri)
+
+        store.new_neural_network(name, dataset)
+        return
+
+    def evaluate(self, genome):
+        return random.random()
+
+'''
 class NN:
     name = ""
     net = buildNetwork(1, 1, 1)
@@ -142,3 +183,4 @@ class NN:
     
     
         return returnValue 
+'''

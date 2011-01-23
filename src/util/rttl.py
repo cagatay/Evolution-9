@@ -15,8 +15,8 @@ def parse(rttl_string):
     
     if defaults:
         defaults = defaults.split(",")
-        defaultDuration = int(defaults[0].split("=")[1])
-        defaultOctave = int(defaults[1].split("=")[1])
+        defaultDuration = defaults[0].split("=")[1]
+        defaultOctave = defaults[1].split("=")[1]
     
     notes = notes.split(",")
     for n in notes:
@@ -24,27 +24,32 @@ def parse(rttl_string):
         if defaults:
             duration = defaultDuration
             octave = defaultOctave
-        dot = 0
+        dot = ''
         if n[0].isdigit():
             if n[1].isdigit():
-                duration = int(n[:2])
+                duration = n[:2]
                 n = n[2:]
             else:
-                duration = int(n[0])
+                duration = n[0]
                 n = n[1:]
-        if n.endswith("."):
-            dot = 1
-            n = n[0:len(n) - 1]
         if n[len(n) - 1].isdigit():
-            octave = int(n[len(n) - 1])
+            octave = n[len(n) - 1]
             n = n[0:len(n) - 1]
-        
-        if n == "P":
-            n = None
-            
+        if n.endswith("."):
+            dot = '.'
+            n = n[0:len(n) - 1]
+
         track.append(note(n, duration, octave, dot))
         
     return track
+
+def dataset_from_file(file_uri):
+    ds_file = file(file_uri)
+    ds_list = []
+
+    for line in ds_file:
+        track = parse(line)
+        ds_list.append(to_int(track))
 
 def dump(note_list):
     out = '::'

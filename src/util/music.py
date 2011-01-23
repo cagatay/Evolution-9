@@ -11,16 +11,21 @@ dot_range = ['.', '']
 class note(object):
     def __init__(self, note, octave, duration, dot):
         self.note = note
-        self.octave = octave
+        self.octave = '' if octave is None else octave
         self.duration = duration
         self.dot = dot
 
+        if self.note == 'P':
+            self.mingus_note = '0'
+        else:
+            self.mingus_note = Note(self.note, int(self.octave))
+
     def int_tuple(self):
-        return (int(Note(self.note + '-' + self.octave)),
-                value.dots(self.duration, int(bool(self.dot))))
+        return (int(self.mingus_note),
+                value.dots(int(self.duration), int(bool(self.dot))))
 
     def __str__(self):
-        return self.duration + self.note + self.octave + self.dot
+        return self.duration + self.note + self.dot + self.octave
 
 def random_note():
     return note(random.choice(note_range),

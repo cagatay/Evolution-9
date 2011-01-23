@@ -6,72 +6,159 @@ Created on Oct 11, 2010
 
 from constants import SQLITE_FILE
 import sqlite3
+import pickle
 
 class db:
-    __connection__ = None
+    _connection = None
     
     def __init__(self):
-        self.connection = sqlite3.connect(SQLITE_FILE)
-        c = self.connection.cursor()
-
-        # Create table
+        self._connection = sqlite3.connect(SQLITE_FILE)
+        c = self._connection.cursor()
+        
+        # Create neural networks table
         c.execute('''
-                create table if not exists composers(
-                            generation integer,
-                            parent integer,
-                            gene text, 
-                            status text)
-                ''')
+            CREATE TABLE IF NOT EXISTS neural_networks(
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                dataset TEXT,
+                trained BOOLEAN
+            );
+        ''')
 
-        self.commit()
+        # Create saved table
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS evolutions(
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                population_size INTEGER,
+                generation_count INTEGER,
+                evaluator INTEGER,
+                initialized BOOLEAN,
+                FOREIGN KEY(evaluator) REFERENCES neural_networks(id)
+            );
+        ''')
+
+        # create genomes table
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS genomes(
+                id INTEGER PRIMARY KEY,
+                genome TEXT,
+                evolution_id INTEGER,
+                parent_1 INTEGER,
+                parent_2 INTEGER,
+                status TEXT,
+                FOREIGN KEY(evolution_id) REFERENCES evolutions(id)
+            );
+        ''')
+
+        self._commit()
         c.close()
        
-    def __commit__(self):
-        self.connection.commit()
+    def _commit(self):
+        self._connection.commit()
 
-    def __cursor__(self):
-        return self.connection.cursor()
+    @property
+    def _cursor(self):
+        return self._connection.cursor()
 
-    #Commits all transactions which aren't committed and closes db connection
     def close(self): 
-        self.connection.close()
-        
+        self._connection.close()
     
-    #Inserts new song and returns its id
-    def put(self, generation, parent, genome, status):
-        c = self.cursor()
+    def save_evolution(self, name, population_size, evaluator, generation_count, initialized):
+        c = self._cursor
+       
         c.execute('''
-                INSERT INTO composers  VALUES (?,?,?,?)
-                ''', (generation,parent,gene,status))
+            INSERT INTO evolutions (name, evaluator, population_size, generation_count, initialized)
+                VALUES(?, ?, ?, ?);
+        ''', (name, evaluator, population_size, generation_count, int(initialized)))
+        self._commit()
 
-        self.commit()
         c.execute('''
-                SELECT ROWID FROM composers ORDER BY ROWID DESC LIMIT 1
-                ''')
+            SELECT id FROM evolutions ORDER BY ROWID DESC LIMIT 1
+        ''')
         rowid = c.fetchall()
+
         c.close()
         return rowid[0][0]
-    
-    #Returns composer for the given row id
-    def get(self, rowid):
-        c = self.cursor()
+
+    def update_evolution(self, row_id, generation_count, initialized):
+        c = self._cursor
+
         c.execute('''
-                SELECT * FROM composers WHERE ROWID=?
-                ''',(rowid))
+            UPDATE evolutions SET generation_count=?, initialized=?  WHERE id=?;
+        ''', (generation_count, int(initialized), row_id))
+
+        self._commit()
+        c.close()
+
+        return
+
+    #Returns evolution for the given row id
+    def get_evolution(self, rowid):
+        c = self._cursor()
+        c.execute('''
+            SELECT * FROM evolutions WHERE id=?
+        ''', (rowid))
+
         result = c.fetchall()
-        return result[0]
+        c.close()
+
+        return result[0] if result else None
+
+    def get_evolution_list(self):
+        c = self._cursor()
+        c.execute('''
+            SELECT * FROM evolutions
+        ''')
+        
+        result = c.fetchall()
+        c.close()
+
+        return result
     
+    def new_neural_network(self, name, dataset):
+        c = self._cursor
+       
+        c.execute('''
+            INSERT INTO neural_networks (name, dataset, trained)
+                VALUES(?, ?, ?);
+        ''', (name, pickle.dumps(dataset), 0))
+        self._commit()
+
+        c.close()
+        return 
+
+    def update_neural_network(self, row_id, trained):
+        c = self._cursor
+
+        c.execute('''
+            UPDATE neural_networks SET trained=?  WHERE id=?;
+        ''', (int(trained), row_id))
+
+        self._commit()
+        c.close()
+
+        return
+
+    def get_neural_network_list(self):
+        c = self._cursor()
+        c.execute('''
+            SELECT * FROM neural_networks
+        ''')
+        
+        result = c.fetchall()
+        c.close()
+
+        return result
+
     #Updates status of the given row id
     def update(self, rowid, status):
         c = self.cursor()
         c.execute('''
-                UPDATE composers SET status=? WHERE ROWID=?
-                ''', (status, rowid))
+            UPDATE composers SET status=? WHERE ROWID=?
+        ''', (status, rowid))
+
         self.commit()
-    
-    #prints all table with column names  ROWID | GENERATION | PARENT | GENE | STATUS
-    def printAll(self):
-        c=self.cursor()
-        c.execute('SELECT ROWID,generation,parent,gene,status FROM COMPOSERS ORDER BY ROWID DESC')
-        for row in c:
-            print(row)
+
+        c.close()
+        return
