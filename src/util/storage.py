@@ -31,7 +31,7 @@ class db:
                 population_size INTEGER,
                 generation_count INTEGER,
                 evaluator TEXT,
-                initialized BOOLEAN,
+                state TEXT,
                 FOREIGN KEY(evaluator) REFERENCES neural_networks(name)
             );
         ''')
@@ -65,13 +65,13 @@ class db:
     def close(self): 
         self._connection.close()
     
-    def save_evolution(self, name, population_size, evaluator, generation_count, initialized):
+    def save_evolution(self, name, population_size, evaluator, generation_count, state):
         c = self._cursor
        
         c.execute('''
-            INSERT INTO evolutions (name, evaluator, population_size, generation_count, initialized)
+            INSERT INTO evolutions (name, evaluator, population_size, generation_count, state)
                 VALUES(?, ?, ?, ?, ?);
-        ''', (name, evaluator, population_size, generation_count, int(initialized)))
+        ''', (name, evaluator, population_size, generation_count, state))
         self._commit()
 
         c.close()

@@ -42,6 +42,14 @@ class evolution9_app(object):
         cell = gtk.CellRendererText()
         column = gtk.TreeViewColumn('Genome', cell, text=1)
         self.genome_view.append_column(column)
+
+        self.controls = {
+            'initialize': self.builder.get_object('initialize_button'),
+            'evaluate': self.builder.get_object('evaluate_button'),
+            'select' : self.builder.get_object('apply_selection_button'),
+            'graphs' : self.builder.get_object('generation_info_tab'),
+            'play' : self.builder.get_object('play_button')
+        }
         
         # hide dialogs instead of destroying them for reuse
         self.hide_dialog = gtk.Widget.hide_on_delete
@@ -49,13 +57,26 @@ class evolution9_app(object):
         self.builder.connect_signals(self)
 
     def start_evolution(self):
-        if not self.evolution9.initialized:
-            self.builder.get_object('initialize_button').set_sensitive(True)
-        self.builder.get_object('step_1_button').set_sensitive(True)
-        self.builder.get_object('step_50_button').set_sensitive(True)
-        self.builder.get_object('generation_info_tab').set_sensitive(True)
-
+        if self.evolution9.initialized:
+            self.controls['initialize'].set_label('Reproduce')
+        self.update_state()
         self.update_genome_list()
+
+        #self.builder.get_object('generation_info_tab').set_sensitive(True)
+    def update_state(self):
+        for k, v in self.controls.iteritems():
+            v.set_sensitive(False)
+        
+        if self.evolution9:
+            if not self.evolution9.initialized or self.evolution9.state == 'reproduction':
+                self.controls['initialize'].set_sensitive(True)
+            elif self.evolution9.state == 'evaluation':
+                self.controls['evaluate'].set_sensitive(True)
+            elif self.evolution9.state == 'select':
+                self.controls['select'].set_sensitive(True)
+                self.controls['graphs'].set_sensitive(True)
+
+            self.builder.get_object('step_50_button').set_sensitive(True)
 
     def error_message(self, message):
         dialog = gtk.MessageDialog(None,
@@ -68,6 +89,17 @@ class evolution9_app(object):
 
     def on_window_destroy(self, widget, data = None):
         gtk.main_quit()
+
+    def show_individual_info(self, treeview, path, view_column, *args):
+        index = path[0]
+        individual = self.evolution9.current_generation[index]
+        
+        self.builder.get_object('name_label').set_text(individual.name)
+        self.builder.get_object('parent1_label').set_text(individual.parent_1)
+        self.builder.get_object('parent2_label').set_text(individual.parent_2)
+        self.builder.get_object('grade_label').set_text(str(individual.grade))
+
+        self.controls['play'].set_sensitive(True)
 
     def main(self):
         self.window.show()
@@ -154,7 +186,8 @@ class evolution9_app(object):
 
     def on_initialize_button_clicked(self, *args):
         self.evolution9.initialize()
-        self.builder.get_object('initialize_button').set_sensitive(False)
+        self.controls['initialize'].set_label('Reproduce')
+        self.update_state()
         self.update_genome_list()
         
 if __name__ == '__main__':

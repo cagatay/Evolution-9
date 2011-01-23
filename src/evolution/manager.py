@@ -3,14 +3,14 @@ from evolution import operators
 from evolution.genome import song
 
 class evolution(object):
-    def __init__(self, name, evaluator, population_size, store, generation_count = 0, initialized = False):
+    def __init__(self, name, evaluator, population_size, store, generation_count = 0, state='uninitialized'):
         self.store = store
         self.name = name
         self.evaluator = neural_network.get_saved(evaluator, store)
         self.population_size = population_size
         self.generation_count = generation_count
-        self.initialized = initialized
-        if initialized:
+        self.state = state
+        if self.state != 'uninitialized':
             self.get_current_generation()
         else:
             self.current_generation = None
@@ -22,7 +22,7 @@ class evolution(object):
                                   self.population_size,
                                   self.evaluator.name,
                                   self.generation_count,
-                                  self.initialized)
+                                  self.state)
         return
 
     def save_genomes(self):
@@ -42,7 +42,7 @@ class evolution(object):
     def get_saved(cls, name, store):
         result = store.get_evolution(name)
 
-        return cls(result[0], result[3], result[1], store, result[2], bool(result[4])) if result else None
+        return cls(result[0], result[3], result[1], store, result[2], result[4]) if result else None
 
     @classmethod
     def get_list(cls, store):
@@ -57,10 +57,14 @@ class evolution(object):
             g = song(operators.random_genome(), self.name, 0, i)
             self.current_generation.append(g)
 
-        self.initialized = True
+        self.state = 'evaluation'
         self.save_genomes()
         self.save()
         return
+
+    @property
+    def initialized(self):
+        return self.state != 'uninitialized'
 
     def get_current_generation(self):
         result = self.store.get_genomes(self.name, self.generation_count)
