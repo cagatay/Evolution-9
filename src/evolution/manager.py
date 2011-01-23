@@ -112,3 +112,5 @@ class evolution(object):
         console('%s : applied selection on generation %d'%(self.name, self.generation_count))
         
         return
+
+    def reproduce(self, console = None):

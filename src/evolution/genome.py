@@ -1,4 +1,5 @@
 from util import rttl
+from mingus.containers.Track import Track
 
 class song(object):
     def __init__(self,
@@ -28,6 +29,11 @@ class song(object):
         self.grade = grade
         self.status = status
         self.individual_id = individual_id
+
+        self.mingus_track = Track()
+        
+        for n in self.note_list:
+            self.mingus_track.add_notes(n.mingus_note, n.mingus_duration)
 
         self.name = self.evolution + '-' + str(self.generation) + '-' + str(self.individual_id)
         return

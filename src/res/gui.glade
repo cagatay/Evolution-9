@@ -337,6 +337,7 @@
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="on_play_button_clicked"/>
                                   </object>
                                   <packing>
                                     <property name="position">1</property>
@@ -375,7 +376,7 @@
                                 <child>
                                   <object class="GtkLabel" id="label6">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">x graifigi</property>
+                                    <property name="label" translatable="yes">x grafigi</property>
                                   </object>
                                 </child>
                                 <child type="tab">

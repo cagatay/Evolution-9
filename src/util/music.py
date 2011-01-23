@@ -14,15 +14,15 @@ class note(object):
         self.octave = '' if octave is None else octave
         self.duration = duration
         self.dot = dot
+        self.mingus_duration = value.dots(int(self.duration), int(bool(self.dot)))
 
         if self.note == 'P':
-            self.mingus_note = '0'
+            self.mingus_note = None
         else:
             self.mingus_note = Note(self.note, int(self.octave))
 
     def int_tuple(self):
-        return (int(self.mingus_note),
-                value.dots(int(self.duration), int(bool(self.dot))))
+        return (int(self.mingus_note) if self.mingus_note else 0, self.mingus_duration)
 
     def __str__(self):
         return self.duration + self.note + self.dot + self.octave

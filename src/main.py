@@ -3,11 +3,14 @@ import sys, traceback
 import gtk
 from brain.NN import neural_network
 from evolution.manager import evolution
+from mingus.midi import fluidsynth
 from util.storage import db
+from constants import MIDI_FILE
 
 class evolution9_app(object):
     def __init__(self):
         self.store = db()
+        fluidsynth.init(MIDI_FILE, 'alsa')
 
         self.builder = gtk.Builder()
         self.builder.add_from_file('res/gui.glade')
@@ -67,6 +70,8 @@ class evolution9_app(object):
     def start_evolution(self):
         if self.evolution9.initialized:
             self.controls['initialize'].set_label('Reproduce')
+        else:
+            self.controls['initialize'].set_label('Initialize')
         self.update_state()
         self.update_genome_list()
 
@@ -212,6 +217,11 @@ class evolution9_app(object):
         self.controls['initialize'].set_label('Reproduce')
         self.update_state()
         self.update_genome_list()
+
+    def on_play_button_clicked(self, *args):
+        index = self.genome_view.get_selection().get_selected()[1]
+        index = self.genome_list.get_path(index)[0]
+        fluidsynth.play_Track(self.evolution9.current_generation[index].mingus_track)
         
 if __name__ == '__main__':
     app = evolution9_app()
