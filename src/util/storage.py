@@ -18,8 +18,7 @@ class db:
         # Create neural networks table
         c.execute('''
             CREATE TABLE IF NOT EXISTS neural_networks(
-                id INTEGER PRIMARY KEY,
-                name TEXT,
+                name TEXT PRIMARY KEY,
                 dataset TEXT,
                 trained BOOLEAN
             );
@@ -28,13 +27,12 @@ class db:
         # Create saved table
         c.execute('''
             CREATE TABLE IF NOT EXISTS evolutions(
-                id INTEGER PRIMARY KEY,
-                name TEXT,
+                name TEXT PRIMARY KEY,
                 population_size INTEGER,
                 generation_count INTEGER,
-                evaluator INTEGER,
+                evaluator TEXT,
                 initialized BOOLEAN,
-                FOREIGN KEY(evaluator) REFERENCES neural_networks(id)
+                FOREIGN KEY(evaluator) REFERENCES neural_networks(name)
             );
         ''')
 
@@ -43,11 +41,11 @@ class db:
             CREATE TABLE IF NOT EXISTS genomes(
                 id INTEGER PRIMARY KEY,
                 genome TEXT,
-                evolution_id INTEGER,
+                evolution TEXT,
                 parent_1 INTEGER,
                 parent_2 INTEGER,
                 status TEXT,
-                FOREIGN KEY(evolution_id) REFERENCES evolutions(id)
+                FOREIGN KEY(evolution) REFERENCES evolutions(name)
             );
         ''')
 
@@ -73,13 +71,8 @@ class db:
         ''', (name, evaluator, population_size, generation_count, int(initialized)))
         self._commit()
 
-        c.execute('''
-            SELECT id FROM evolutions ORDER BY ROWID DESC LIMIT 1
-        ''')
-        rowid = c.fetchall()
-
         c.close()
-        return rowid[0][0]
+        return
 
     def update_evolution(self, row_id, generation_count, initialized):
         c = self._cursor
@@ -132,7 +125,7 @@ class db:
         c = self._cursor
 
         c.execute('''
-            UPDATE neural_networks SET trained=?  WHERE id=?;
+            UPDATE neural_networks SET trained=?  WHERE name=?;
         ''', (int(trained), row_id))
 
         self._commit()
@@ -141,15 +134,15 @@ class db:
         return
 
     def get_neural_network_list(self):
-        c = self._cursor()
+        c = self._cursor
         c.execute('''
-            SELECT * FROM neural_networks
+            SELECT name FROM neural_networks
         ''')
         
         result = c.fetchall()
         c.close()
 
-        return result
+        return [x[0] for x in result]
 
     #Updates status of the given row id
     def update(self, rowid, status):

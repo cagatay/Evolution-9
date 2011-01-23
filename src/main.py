@@ -14,6 +14,16 @@ class evolution9_app(object):
         self.window = self.builder.get_object('window')
         self.new_evolution_dialog = self.builder.get_object('new_evolution_dialog')
         self.new_neural_network_dialog = self.builder.get_object('new_neural_network_dialog')
+        
+
+        self.nn_list = gtk.ListStore(str)
+        self.nn_combo = self.builder.get_object('nn_combo')
+        self.nn_combo.set_model(self.nn_list)
+        cell = gtk.CellRendererText()
+        self.nn_combo.pack_start(cell, True)
+        self.nn_combo.add_attribute(cell,'text', 0)
+
+        self.update_nn_list()
 
         # hide dialogs instead of destroying them for reuse
         self.hide_dialog = gtk.Widget.hide_on_delete
@@ -36,6 +46,12 @@ class evolution9_app(object):
         self.window.show()
         gtk.main()
 
+    def update_nn_list(self):
+        networks = neural_network.get_list(self.store)
+
+        for n in networks:
+            self.nn_combo.append_text(n)
+
     def on_open_evolution_button_clicked(self, *args):
         self.error_message('There is no saved evolution. You must create one first')
 
@@ -52,6 +68,7 @@ class evolution9_app(object):
             self.error_message(str(err))
             traceback.print_exc(file=sys.stdout)
         else:
+            self.update_nn_list()
             self.new_neural_network_dialog.hide()
 
     def on_new_evolution_button_clicked(self, *args):

@@ -14,10 +14,7 @@ class neural_network(object):
         self.store = store
         self.trained = True
 
-        if row_id is None:
-            self.row_id = self.save()
-        else:
-            self.row_id = row_id
+        self.save()
 
         return
 
@@ -35,7 +32,7 @@ class neural_network(object):
     def get_list(cls, store):
         result = store.get_neural_network_list()
         
-        return [tuple(x) for x in result]
+        return [x for x in result]
 
     @classmethod
     def new(cls, name, store, ds_file_uri):
