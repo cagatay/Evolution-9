@@ -1,36 +1,31 @@
+from brain.NN import neural_network
 
 class evolution(object):
-    def __init__(self, name, evaluator, population_size, store, row_id):
+    def __init__(self, name, evaluator, population_size, store, initialized = False):
         self.store = store
         self.name = name
-        self.evaluator = evaluator
+        self.evaluator = neural_network.get_saved(evaluator, store)
         self.population_size = population_size
         self.generation_count = 0
+        self.initialized = initialized
 
-        if row_id is None:
-            self.row_id = self.save()
-        else:
-            self.row_id = row_id
+        self.save()
 
     def save(self):
-        if self.row_id:
-            self.store.update_evolution(self.row_id,
-                                        self.generation_count,
-                                        self.initialized)
-        else:
-            return self.store.new_evolution(self.name,
-                                            self.evaluator,
-                                            self.population_size,
-                                            self.initialized)
+        self.store.save_evolution(self.name,
+                                  self.population_size,
+                                  self.evaluator.name,
+                                  self.generation_count,
+                                  self.initialized)
 
     @classmethod
-    def get_saved(cls, row_id, store):
-        result = store.get_evolution(row_id)
+    def get_saved(cls, name, store):
+        result = store.get_evolution(name)
 
-        return cls(result[1], result[2], result[3], store, row_id) if result else None
+        return cls(result[1], result[2], result[3], store) if result else None
 
     @classmethod
     def get_list(cls, store):
         result = store.get_evolution_list()
 
-        return [tuple(x) for x in result] if result else None
+        return [x[0] for x in result] if result else None

@@ -2,6 +2,7 @@
 import sys, traceback
 import gtk
 from brain.NN import neural_network
+from evolution.manager import evolution
 from util.storage import db
 
 class evolution9_app(object):
@@ -47,10 +48,25 @@ class evolution9_app(object):
         gtk.main()
 
     def update_nn_list(self):
+        self.nn_list.clear()
         networks = neural_network.get_list(self.store)
 
-        for n in networks:
-            self.nn_combo.append_text(n)
+        if networks:
+            for n in networks:
+                self.nn_combo.append_text(n)
+
+    def on_new_evolution_ok_button_clicked(self, *args):
+        name = self.builder.get_object('new_evolution_name').get_text()
+        population_size = self.builder.get_object('new_evolution_pop_size').get_text()
+        evaluator = self.builder.get_object('nn_combo').get_active_text()
+
+        try:
+            self.evolution9 = evolution(name, evaluator, population_size, self.store)
+        except Exception, err:
+            self.error_message(str(err))
+            traceback.print_exc(file=sys.stdout)
+        else:
+            self.new_evolution_dialog.hide()
 
     def on_open_evolution_button_clicked(self, *args):
         self.error_message('There is no saved evolution. You must create one first')

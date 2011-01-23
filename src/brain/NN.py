@@ -9,24 +9,23 @@ import random
 from util import rttl
 
 class neural_network(object):
-    def __init__(self, name, store, dataset, trained, row_id = None):
+    def __init__(self, name, dataset, trained, store):
         self.name = name
         self.store = store
         self.trained = True
-
-        self.save()
+        self.dataset = dataset
 
         return
 
     def save(self):
-        self.store.update_neural_network(self.row_id, self.trained)
+        self.store.update_neural_network(self.name, self.trained)
         return
 
     @classmethod
-    def get_saved(cls, row_id, store):
-        result = store.get_neural_network(row_id)
-        
-        return cls(result[0], store, result[1], row_id)
+    def get_saved(cls, name, store):
+        result = store.get_neural_network(name)
+
+        return cls(name, result[0], result[1], store) if result else None
 
     @classmethod
     def get_list(cls, store):
@@ -37,6 +36,7 @@ class neural_network(object):
     @classmethod
     def new(cls, name, store, ds_file_uri):
         dataset = rttl.dataset_from_file(ds_file_uri)
+        print dataset
 
         store.new_neural_network(name, dataset)
         return

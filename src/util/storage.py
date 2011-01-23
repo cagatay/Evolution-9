@@ -6,7 +6,7 @@ Created on Oct 11, 2010
 
 from constants import SQLITE_FILE
 import sqlite3
-import pickle
+import json
 
 class db:
     _connection = None
@@ -18,7 +18,7 @@ class db:
         # Create neural networks table
         c.execute('''
             CREATE TABLE IF NOT EXISTS neural_networks(
-                name TEXT PRIMARY KEY,
+                name TEXT PRIMARY KEY ON CONFLICT REPLACE,
                 dataset TEXT,
                 trained BOOLEAN
             );
@@ -27,7 +27,7 @@ class db:
         # Create saved table
         c.execute('''
             CREATE TABLE IF NOT EXISTS evolutions(
-                name TEXT PRIMARY KEY,
+                name TEXT PRIMARY KEY ON CONFLICT REPLACE,
                 population_size INTEGER,
                 generation_count INTEGER,
                 evaluator TEXT,
@@ -39,7 +39,7 @@ class db:
         # create genomes table
         c.execute('''
             CREATE TABLE IF NOT EXISTS genomes(
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY ON CONFLICT REPLACE,
                 genome TEXT,
                 evolution TEXT,
                 parent_1 INTEGER,
@@ -67,31 +67,19 @@ class db:
        
         c.execute('''
             INSERT INTO evolutions (name, evaluator, population_size, generation_count, initialized)
-                VALUES(?, ?, ?, ?);
+                VALUES(?, ?, ?, ?, ?);
         ''', (name, evaluator, population_size, generation_count, int(initialized)))
         self._commit()
 
         c.close()
         return
 
-    def update_evolution(self, row_id, generation_count, initialized):
-        c = self._cursor
-
-        c.execute('''
-            UPDATE evolutions SET generation_count=?, initialized=?  WHERE id=?;
-        ''', (generation_count, int(initialized), row_id))
-
-        self._commit()
-        c.close()
-
-        return
-
     #Returns evolution for the given row id
-    def get_evolution(self, rowid):
+    def get_evolution(self, name):
         c = self._cursor()
         c.execute('''
-            SELECT * FROM evolutions WHERE id=?
-        ''', (rowid))
+            SELECT * FROM evolutions WHERE name=?
+        ''', (name))
 
         result = c.fetchall()
         c.close()
@@ -101,7 +89,7 @@ class db:
     def get_evolution_list(self):
         c = self._cursor()
         c.execute('''
-            SELECT * FROM evolutions
+            SELECT name FROM evolutions
         ''')
         
         result = c.fetchall()
@@ -115,7 +103,7 @@ class db:
         c.execute('''
             INSERT INTO neural_networks (name, dataset, trained)
                 VALUES(?, ?, ?);
-        ''', (name, pickle.dumps(dataset), 0))
+        ''', (name, json.dumps(dataset), 0))
         self._commit()
 
         c.close()
@@ -132,6 +120,19 @@ class db:
         c.close()
 
         return
+
+    def get_neural_network(self, name):
+        c = self._cursor
+
+        c.execute('''
+            SELECT dataset, trained from neural_networks WHERE name=?;
+        ''', [name])
+
+        result = c.fetchall()[0]
+
+        c.close()
+
+        return json.loads(result[0]), bool(result[1])
 
     def get_neural_network_list(self):
         c = self._cursor

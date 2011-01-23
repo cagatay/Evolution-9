@@ -51,6 +51,8 @@ def dataset_from_file(file_uri):
         track = parse(line)
         ds_list.append(to_int(track))
 
+    return ds_list
+
 def dump(note_list):
     out = '::'
 
