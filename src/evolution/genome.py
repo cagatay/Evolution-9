@@ -12,16 +12,7 @@ class song(object):
                  grade = 0.0,
                  status = 'created'):
 
-        if type(genome) is list:
-            self.note_list = genome
-            self.genome = rttl.dump(genome)
-
-        elif type(genome) is unicode:
-            self.genome = genome
-            self.note_list = rttl.parse(genome)
-
-        self.int_list = rttl.to_int(self.note_list)
-
+        
         self.evolution = evolution
         self.generation = generation
         self.parent_1 = parent_1
@@ -29,6 +20,8 @@ class song(object):
         self.grade = grade
         self.status = status
         self.individual_id = individual_id
+
+        self.set_genome(genome)
 
         self.mingus_track = Track()
         
@@ -41,3 +34,15 @@ class song(object):
     @property
     def selected(self):
         return self.status == 'selected'
+
+    def set_genome(self, genome):
+        if type(genome) is list:
+            self.note_list = genome
+            self.genome = rttl.dump(genome)
+
+        elif type(genome) is unicode:
+            self.genome = genome
+            self.note_list = rttl.parse(genome)
+
+        self.int_list = rttl.to_int(self.note_list)
+

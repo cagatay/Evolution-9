@@ -85,7 +85,7 @@ class evolution9_app(object):
         if self.evolution9:
             if not self.evolution9.initialized or self.evolution9.state == 'reproduce':
                 self.controls['initialize'].set_sensitive(True)
-            elif self.evolution9.state == 'evaluation':
+            elif self.evolution9.state == 'evaluate':
                 self.controls['evaluate'].set_sensitive(True)
             elif self.evolution9.state == 'select':
                 self.controls['select'].set_sensitive(True)
@@ -212,11 +212,19 @@ class evolution9_app(object):
         self.update_state()
         return
 
-    def on_initialize_button_clicked(self, *args):
-        self.evolution9.initialize(self.log_console)
-        self.controls['initialize'].set_label('Reproduce')
+    def reproduce(self, *args):
+        self.evolution9.reproduce(self.log_console)
         self.update_state()
         self.update_genome_list()
+
+    def on_initialize_button_clicked(self, *args):
+        if self.evolution9.initialized:
+            self.reproduce(*args)
+        else:
+            self.evolution9.initialize(self.log_console)
+            self.controls['initialize'].set_label('Reproduce')
+            self.update_state()
+            self.update_genome_list()
 
     def on_play_button_clicked(self, *args):
         index = self.genome_view.get_selection().get_selected()[1]

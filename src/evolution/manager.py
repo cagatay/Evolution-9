@@ -57,7 +57,7 @@ class evolution(object):
             g = song(operators.random_genome(), self.name, 0, i)
             self.current_generation.append(g)
 
-        self.state = 'evaluation'
+        self.state = 'evaluate'
         self.save_genomes()
         self.save()
 
@@ -114,3 +114,78 @@ class evolution(object):
         return
 
     def reproduce(self, console = None):
+        self.generation_count += 1
+
+        console('%s : reproducing of generation %d started'%(self.name, self.generation_count))
+
+        pool = []
+        
+        index = 0
+        while self.current_generation:
+            l = len(self.current_generation) - 1
+
+            if not l:
+                break
+
+            a = operators.r(l)
+
+            parent_1 = self.current_generation[a]
+            del self.current_generation[a]
+
+            a = operators.r(l - 1)
+            parent_2 = self.current_generation[a]
+
+            del self.current_generation[a]
+
+            child_1_g, child_2_g = operators.random_crossover(parent_1.note_list,
+                                                              parent_2.note_list)
+            operators.random_mutator(child_1_g)
+            operators.random_mutator(child_2_g)
+
+            parent_1.individual_id = index
+            parent_1.status = 'created'
+            parent_1.generation = self.generation_count
+            parent_1.grade = 0.0
+            index += 1
+
+            parent_2.individual_id = index
+            parent_2.status = 'created'
+            parent_2.generation = self.generation_count
+            parent_2.grade = 0.0
+            index += 1
+
+            child_1 = song(child_1_g,
+                           self.name,
+                           self.generation_count,
+                           index,
+                           parent_1.name,
+                           parent_2.name)
+            index += 1
+
+            child_2 = song(child_2_g,
+                           self.name,
+                           self.generation_count,
+                           index,
+                           parent_1.name,
+                           parent_2.name)
+            index += 1
+
+            t = parent_1.note_list
+            operators.random_mutator(t)
+            parent_1.set_genome(t)
+
+            t = parent_2.note_list
+            operators.random_mutator(t)
+            parent_2.set_genome(t)
+
+            pool += [parent_1, parent_2, child_1, child_2]
+
+            console('created %s and %s from %s and %s'%(child_1.name, child_2.name, parent_1.name, parent_2.name))
+
+        self.current_generation = pool
+
+        self.save()
+        self.save_genomes()
+        self.state = 'evaluate'
+        console('%s : created generation %d'%(self.name, self.generation_count))
+
