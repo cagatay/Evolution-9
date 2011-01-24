@@ -90,6 +90,11 @@ class evolution(object):
                 console('%s evaluation result: %f'%(g.name, result))
 
         self.current_generation = sorted(self.current_generation, key=lambda x: x.grade, reverse=True)
+
+        self.max_grade = self.current_generation[0].grade
+        self.min_grade = self.current_generation[len(self.current_generation) - 1].grade
+        self.avg_grade = sum([x.grade for x in self.current_generation])/self.population_size
+
         for i in range(self.population_size):
             if i < self.population_size/2:
                 self.current_generation[i].status = 'selected'

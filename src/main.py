@@ -208,7 +208,17 @@ class evolution9_app(object):
         self.evolution9.evaluate(self.log_console)
         self.update_genome_list()
         self.update_state()
+        self.update_generation_info()
         return
+
+    def update_generation_info(self):
+        max_grade = str(self.evolution9.max_grade)
+        min_grade = str(self.evolution9.min_grade)
+        avg_grade = str(self.evolution9.avg_grade)
+
+        self.builder.get_object('max_grade_label').set_text(max_grade)
+        self.builder.get_object('min_grade_label').set_text(min_grade)
+        self.builder.get_object('average_grade_label').set_text(avg_grade)
 
     def reproduce(self, *args):
         self.evolution9.reproduce(self.log_console)
