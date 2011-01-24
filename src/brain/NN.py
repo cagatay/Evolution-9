@@ -62,12 +62,12 @@ class neural_network(object):
         for i in range(len(genome) - 1):
             output = self.net.activate(genome[i])
             target = genome[i + 1]
-            print output
             err += (math.fabs(output[0] - target[0]) + math.fabs(output[1] - target[1]))
 
         return 1/err
 
     def train(self):
+        ds_store = []
         for song in self.dataset:
             ds_in = song[:len(song) - 1]
             ds_out = song[1:]
@@ -75,9 +75,11 @@ class neural_network(object):
             ds = SupervisedDataSet(2, 2)
 
             for i in range(len(song) -1):
-                ds.addSample(ds_in[i], ds_out[i])
+                if ds_in[i] not in ds_store:
+                    ds.addSample(ds_in[i], ds_out[i])
+                    ds_store.append(ds_in[i])
 
-            trainer = BackpropTrainer(self.net, ds, verbose=True)
-            trainer.trainEpochs(50)
-
+            if len(ds):
+                trainer = BackpropTrainer(self.net, ds, verbose=True)
+                trainer.train() 
         self.save()
