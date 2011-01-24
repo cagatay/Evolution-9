@@ -50,7 +50,6 @@ class evolution9_app(object):
             'initialize': self.builder.get_object('initialize_button'),
             'evaluate': self.builder.get_object('evaluate_button'),
             'select' : self.builder.get_object('apply_selection_button'),
-            'graphs' : self.builder.get_object('generation_info_tab'),
             'play' : self.builder.get_object('play_button')
         }
 
@@ -89,7 +88,6 @@ class evolution9_app(object):
                 self.controls['evaluate'].set_sensitive(True)
             elif self.evolution9.state == 'select':
                 self.controls['select'].set_sensitive(True)
-                self.controls['graphs'].set_sensitive(True)
 
             self.builder.get_object('step_50_button').set_sensitive(True)
 

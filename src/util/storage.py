@@ -112,12 +112,12 @@ class db:
         c.close()
         return 
 
-    def save_neural_network(self, dataset, trained):
+    def save_neural_network(self, name, dataset, trained):
         c = self._cursor
 
         c.execute('''
-            UPDATE neural_networks SET trained=?  WHERE name=?;
-        ''', (int(trained), json.dumps(dataset)))
+            UPDATE neural_networks SET name=?, trained=?  WHERE name=?;
+        ''', (name, int(trained), json.dumps(dataset)))
 
         self._commit()
         c.close()
