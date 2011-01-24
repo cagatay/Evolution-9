@@ -24,7 +24,6 @@ def parse(rttl_string):
         if defaults:
             duration = defaultDuration
             octave = defaultOctave
-        dot = ''
         if n[0].isdigit():
             if n[1].isdigit():
                 duration = n[:2]
@@ -36,10 +35,9 @@ def parse(rttl_string):
             octave = n[len(n) - 1]
             n = n[0:len(n) - 1]
         if n.endswith("."):
-            dot = '.'
             n = n[0:len(n) - 1]
 
-        track.append(note(n, duration, octave, dot))
+        track.append(note(n, octave, duration))
     return track
 
 def dataset_from_file(file_uri):

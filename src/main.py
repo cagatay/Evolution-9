@@ -148,6 +148,25 @@ class evolution9_app(object):
                 self.genome_list.append((x, l[x].genome))
         return
 
+    def on_step_50_button_clicked(self, *args):
+        if not self.evolution9.initialized:
+            self.evolution9.initialize()
+        if self.evolution9.state == 'evaluate':
+            self.evolution9.evaluate(self.log_console)
+        if self.evolution9.state == 'select':
+            self.evolution9.apply_selection(self.log_console)
+
+        for _ in range(50):
+            self.evolution9.reproduce(self.log_console)
+            self.evolution9.evaluate(self.log_console)
+            self.evolution9.apply_selection(self.log_console)
+
+        self.update_state()
+        self.update_genome_list()
+        self.update_generation_info()
+
+        return
+
     def on_new_evolution_ok_button_clicked(self, *args):
         name = self.builder.get_object('new_evolution_name').get_text()
         population_size = self.builder.get_object('new_evolution_pop_size').get_text()

@@ -81,5 +81,6 @@ class neural_network(object):
 
             if len(ds):
                 trainer = BackpropTrainer(self.net, ds, verbose=True)
-                trainer.train() 
+                for _ in range(10):
+                    trainer.train() 
         self.save()
