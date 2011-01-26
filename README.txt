@@ -1,8 +1,8 @@
 requirements:
-	python 2.6 (strictly)
-	pybrain (and its own requirements)
-	mingus
-	pyevolve
+    python 2.6 (strictly)
+    pybrain (and its own requirements)
+    mingus
+    pyevolve
     pygtk
 	
 installation:
