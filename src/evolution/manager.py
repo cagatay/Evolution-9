@@ -81,6 +81,16 @@ class evolution(object):
 
         return
 
+    def get_generation(self, generation):
+        result = self.store.get_genomes(self.name, generation)
+
+        if result:
+            self.searched_generation = []
+            
+            for i in result:
+                g = song(i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8])
+                self.searched_generation.append(g)
+
     def evaluate(self, console = None):
         self.results = []
         for g in self.current_generation:

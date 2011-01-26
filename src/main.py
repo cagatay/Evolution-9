@@ -50,7 +50,8 @@ class evolution9_app(object):
             'initialize': self.builder.get_object('initialize_button'),
             'evaluate': self.builder.get_object('evaluate_button'),
             'select' : self.builder.get_object('apply_selection_button'),
-            'play' : self.builder.get_object('play_button')
+            'play' : self.builder.get_object('play_button'),
+            'get_generation' : self.builder.get_object('get_generation_button')
         }
 
         self.console = gtk.TextBuffer()
@@ -82,6 +83,7 @@ class evolution9_app(object):
             v.set_sensitive(False)
         
         if self.evolution9:
+            self.controls['get_generation'].set_sensitive(True)
             if not self.evolution9.initialized or self.evolution9.state == 'reproduce':
                 self.controls['initialize'].set_sensitive(True)
             elif self.evolution9.state == 'evaluate':
@@ -139,14 +141,21 @@ class evolution9_app(object):
 
         return
 
-    def update_genome_list(self):
+    def update_genome_list(self, l = None):
         self.genome_list.clear()
-        l = self.evolution9.current_generation
+        if l is None:
+            l = self.evolution9.current_generation
 
         if l:
             for x in range(len(l)):
                 self.genome_list.append((x, l[x].genome))
         return
+
+    def on_get_generation_button_clicked(self, *args):
+        generation = int(self.builder.get_object('get_generation_entry').get_text())
+        self.evolution9.get_generation(generation)
+        self.update_genome_list(self.evolution9.searched_generation)
+        self.error_message('working')
 
     def on_step_50_button_clicked(self, *args):
         if not self.evolution9.initialized:

@@ -17,7 +17,6 @@ class neural_network(object):
         self.trained = trained
         self.dataset = dataset
 
-        '''
         self.net = RecurrentNetwork()
         self.net.addInputModule(LinearLayer(2, name='in'))
         self.net.addModule(SigmoidLayer(3, name='hidden'))
@@ -28,7 +27,7 @@ class neural_network(object):
         self.net.sortModules()
         '''
         self.net = buildNetwork(2, 3, 2)
-        
+        '''
         if not self.trained:
             self.train()
 
@@ -47,7 +46,7 @@ class neural_network(object):
     @classmethod
     def get_list(cls, store):
         result = store.get_neural_network_list()
-        
+        print result
         return [x for x in result]
 
     @classmethod
@@ -60,7 +59,11 @@ class neural_network(object):
     def evaluate(self, genome):
         err = 0.0
         for i in range(len(genome) - 1):
+            print '---------- input ------------'
+            print genome[i]
             output = self.net.activate(genome[i])
+            print '--------- output ------------'
+            print output
             target = genome[i + 1]
             err += (math.fabs(output[0] - target[0]) + math.fabs(output[1] - target[1]))
 
@@ -75,12 +78,11 @@ class neural_network(object):
             ds = SupervisedDataSet(2, 2)
 
             for i in range(len(song) -1):
-                if ds_in[i] not in ds_store:
-                    ds.addSample(ds_in[i], ds_out[i])
-                    ds_store.append(ds_in[i])
+                #if ds_in[i] not in ds_store:
+                ds.addSample(ds_in[i], ds_out[i])
+                ds_store.append(ds_in[i])
 
             if len(ds):
                 trainer = BackpropTrainer(self.net, ds, verbose=True)
-                for _ in range(10):
-                    trainer.train() 
+                trainer.trainUntilConvergence() 
         self.save()

@@ -19,7 +19,7 @@ class note(object):
             self.mingus_note = Note(self.note, int(self.octave))
 
     def int_tuple(self):
-        return (int(self.mingus_note) if self.mingus_note else 0, self.mingus_duration)
+        return (float(int(self.mingus_note))/1000 if self.mingus_note else 1, -1*float(self.mingus_duration)/1000)
 
     def __str__(self):
         return self.duration + self.note + self.octave
