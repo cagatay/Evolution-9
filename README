@@ -1,4 +1,4 @@
-this is our bs project which aims to create songs like the ones by the beatles (by 'like' i simply mean 'catchy') using genetic programming and artificial neural networks and no human interaction at all during evaluation process. It has a GTK gui to track the process and play the results.
+this is our bs project which aims to create songs like the ones by the beatles (by 'like' i simply mean 'as catchy as') using genetic programming and artificial neural networks and no human interaction at all during evaluation process. It has a GTK gui to track the process and play the results.
 
 if anybody here is interested in the idea or thinks it's viable, please contact us. we don't have crazy results yet, but there's still a lot to do.
 
