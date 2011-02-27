@@ -489,6 +489,7 @@
                                 <child>
                                   <object class="GtkLabel" id="average_grade_label">
                                     <property name="visible">True</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -827,7 +828,7 @@
                   <object class="GtkLabel" id="label13">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
-                    <property name="yalign">2.2351741291171123e-10</property>
+                    <property name="yalign">2.2351741291171123e-010</property>
                     <property name="label" translatable="yes">Crossover Types:</property>
                   </object>
                   <packing>
@@ -917,7 +918,6 @@
                       <object class="GtkComboBox" id="nn_combo">
                         <property name="visible">True</property>
                         <property name="has_frame">False</property>
-                        <property name="entry_text_column">0</property>
                       </object>
                       <packing>
                         <property name="position">0</property>
@@ -1013,7 +1013,6 @@
           <object class="GtkComboBox" id="evolution_combo">
             <property name="visible">True</property>
             <property name="active">0</property>
-            <property name="entry_text_column">0</property>
           </object>
           <packing>
             <property name="expand">False</property>

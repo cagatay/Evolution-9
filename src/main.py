@@ -1,3 +1,4 @@
+
 #!/usr/bin/python2.6
 import sys, traceback
 import gtk
@@ -50,8 +51,7 @@ class evolution9_app(object):
             'initialize': self.builder.get_object('initialize_button'),
             'evaluate': self.builder.get_object('evaluate_button'),
             'select' : self.builder.get_object('apply_selection_button'),
-            'play' : self.builder.get_object('play_button'),
-            'get_generation' : self.builder.get_object('get_generation_button')
+            'play' : self.builder.get_object('play_button')
         }
 
         self.console = gtk.TextBuffer()
@@ -83,7 +83,6 @@ class evolution9_app(object):
             v.set_sensitive(False)
         
         if self.evolution9:
-            self.controls['get_generation'].set_sensitive(True)
             if not self.evolution9.initialized or self.evolution9.state == 'reproduce':
                 self.controls['initialize'].set_sensitive(True)
             elif self.evolution9.state == 'evaluate':
@@ -108,11 +107,12 @@ class evolution9_app(object):
     def show_individual_info(self, treeview, path, view_column, *args):
         index = path[0]
         individual = self.evolution9.current_generation[index]
+        fixed_grade = "%.5f" % ( individual.grade )
         
         self.builder.get_object('name_label').set_text(individual.name)
         self.builder.get_object('parent1_label').set_text(individual.parent_1)
         self.builder.get_object('parent2_label').set_text(individual.parent_2)
-        self.builder.get_object('grade_label').set_text(str(individual.grade))
+        self.builder.get_object('grade_label').set_text( fixed_grade )
         self.builder.get_object('selected_label').set_text(str(individual.selected))
 
         self.controls['play'].set_sensitive(True)
@@ -141,21 +141,14 @@ class evolution9_app(object):
 
         return
 
-    def update_genome_list(self, l = None):
+    def update_genome_list(self):
         self.genome_list.clear()
-        if l is None:
-            l = self.evolution9.current_generation
+        l = self.evolution9.current_generation
 
         if l:
             for x in range(len(l)):
                 self.genome_list.append((x, l[x].genome))
         return
-
-    def on_get_generation_button_clicked(self, *args):
-        generation = int(self.builder.get_object('get_generation_entry').get_text())
-        self.evolution9.get_generation(generation)
-        self.update_genome_list(self.evolution9.searched_generation)
-        self.error_message('working')
 
     def on_step_50_button_clicked(self, *args):
         if not self.evolution9.initialized:
@@ -240,9 +233,10 @@ class evolution9_app(object):
         return
 
     def update_generation_info(self):
-        max_grade = str(self.evolution9.max_grade)
-        min_grade = str(self.evolution9.min_grade)
-        avg_grade = str(self.evolution9.avg_grade)
+
+        max_grade = "%.5f" % ( self.evolution9.max_grade )
+        min_grade = "%.5f" % ( self.evolution9.min_grade )
+        avg_grade = "%.5f" % ( self.evolution9.avg_grade )
 
         self.builder.get_object('max_grade_label').set_text(max_grade)
         self.builder.get_object('min_grade_label').set_text(min_grade)
